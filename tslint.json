@@ -1,0 +1,30 @@
+{
+  "defaultSeverity": "warning",
+  "extends": ["tslint-config-airbnb"],
+  "linterOptions": {
+      "exclude": ["node_modules/**"]
+  },
+  "rules": {
+      "quotemark": [true, "single"],
+      "indent": [true, "spaces", 4],
+      "ter-indent": [true, 4, {
+          "SwitchCase": 1
+      }],
+      "interface-name": false,
+      "ordered-imports": false,
+      "object-literal-sort-keys": false,
+      "no-consecutive-blank-lines": false,
+      "member-ordering": false,
+      "max-classes-per-file": false,
+      "max-line-length": false,
+      "class-name": false,
+      "variable-name": false,
+      "no-console": false,
+      "forin": false,
+      "import-name": false,
+      "align": [true, "parameters", "statements"],
+      "prefer-array-literal": false,
+      "semicolon": [true, "always"],
+      "function-name": false
+  }
+}

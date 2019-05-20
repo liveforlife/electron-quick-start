@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>未来教室</title>
+    <style>
+        .update-container {
+            width: 100vw;
+            height: 100vh;
+            background: url('./img/bg.png') no-repeat;
+            overflow: hidden;
+            position: relative;
+        }
+        .mask {
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            position: absolute;
+            left: 0;
+            bottom: 0;
+        }
+        .update-box {
+            width: 450px;
+            height: 320px;
+            background: #fff;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            z-index: 2;
+            margin-top: -175px;
+            margin-left: -225px;
+            border-radius: 6px;
+        }
+        .update-top-img {
+            width: 450px;
+            height: 204px;
+            position: absolute;
+            left: 0;
+            top: -41px;
+            background: url('./img/lib_update_app_top_bg.png') no-repeat;
+        }
+        .update-content {
+            width: 100%;
+            height: 116px;
+            position: absolute;
+            left: 0;
+            bottom: 0;
+        }
+        .update-description {
+            width: 100%;
+            height: 50px;
+            margin-left: 11%;
+        }
+        ul li{
+            padding:0;
+            margin:0;
+            list-style:none;
+        }
+        .footer {
+            width: 100%;
+            height: 96px;
+            line-height: 40px;
+            text-align: center;
+        }
+        #update-button {
+            display: inline-block;
+            width: 80%;
+            height: 40px;
+            line-height: 40px;
+            background: #e94339;
+            border-radius: 3px;
+            color: #fff;
+            cursor: pointer;
+            font-weight: 400;
+        }
+        #update-button:active{
+            cursor: pointer;
+            opacity: 0.6;
+        }
+        progress{
+            width: 80%;
+            height: 5px;
+            border-radius: 0.2rem;
+            margin-left: 10%;
+            display: none;
+        }
+        progress::-webkit-progress-bar {
+            background-color: #d7d7d7;
+        }
+        progress::-webkit-progress-value {
+            background-color: #f00;
+        }
+        #percentage {
+            width: 80%;
+            height: 30px;
+            text-align: center;
+            display: inline-block;
+            line-height: 30px;
+        }
+    </style>
+</head>
+<body style="overflow:hidden;margin: 0;padding:0;">
+    <div class="update-container">
+        <div class="mask"></div>
+        <div class="update-box">
+            <div class="update-top-img"></div>
+            <div class="update-content">
+                <div class="update-description">
+                   <span >检查到最新<span id="version"></span>版本,请点击按钮进行升级?</span>
+                </div>
+                <div class="footer">
+                    <a id="update-button" onclick="update()">升级</a>
+                    <progress max="100" value="0" id="pg"></progress> 
+                    <span id="percentage"></span>        
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <script>           
+            if(require) {
+                ipcRenderer = require('electron').ipcRenderer;
+            }
+
+            const updateButton = document.getElementById('update-button');
+            const pg = document.getElementById('pg');
+            const percentage = document.getElementById('percentage');
+            const version = document.getElementById('version');
+            let isOffline = false;
+
+            function update() {
+                if (!isOffline) {
+                    ipcRenderer.send('download-message');
+                }
+            }
+
+            ipcRenderer.send('showUpdate');
+
+            ipcRenderer.on('progress', function(event, message) {
+                updateButton.style.display = 'none';
+                pg.style.display = 'block';
+                pg.value = message*100;
+                percentage.innerHTML = `${Math.floor(message*100)}%`
+            });
+
+            ipcRenderer.on('targetVersion', function(event, message) {
+                console.log('message', message);
+
+                version.innerHTML = message;
+            });
+           
+
+            timer = setInterval(() => {
+                if (window.navigator.onLine) {
+                    isOffline = false;
+                    ipcRenderer.send('downloadOnline');
+                } else {
+                    isOffline =true;
+                    ipcRenderer.send('downloadOffline');
+                }
+            },1000);
+
+            ipcRenderer.on('downloadSuccess', function(event, message) {
+                clearInterval(timer);
+            });
+           
+    </script>
+</body>
+</html>
+
+

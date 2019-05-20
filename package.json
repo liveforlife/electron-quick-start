@@ -1,0 +1,57 @@
+{
+  "name": "LearnBot",
+  "version": "1.7.6",
+  "buildId": "176",
+  "main": "./built/src/main.js",
+  "scripts": {
+    "compile": "tsc",
+    "watch": "tsc -w",
+    "lint": "tslint -c tslint.json -p tsconfig.json",
+    "dev": "yarn run compile && electron ./built/src/main.js",
+    "build": "yarn run compile && rm -rf ./dist && electron-builder --ia32 -w -m",
+    "win-build": "yarn run compile && electron-builder --ia32 -w -m"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@types/js-base64": "^2.3.1",
+    "@types/node-fetch": "^2.3.4",
+    "electron": "^5.0.1",
+    "electron-builder": "^20.40.2",
+    "tslint": "^5.16.0",
+    "tslint-config-airbnb": "^5.11.1",
+    "typescript": "^3.4.5"
+  },
+  "build": {
+    "productName": "LearnBot",
+    "mac": {
+      "icon": "static/img/app_icon.png"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "static/img/logo.ico",
+      "asar": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "perMachine": true,
+      "artifactName": "${productName}_${version}.${ext}"
+    },
+    "directories": {
+      "buildResources": "static"
+    },
+    "files": [
+      "./built/**/*",
+      "./html/**/*",
+      "./static/**/*",
+      "./.env"
+    ]
+  },
+  "dependencies": {
+    "dotenv": "^8.0.0",
+    "is-online": "^8.2.0",
+    "js-base64": "^2.5.1",
+    "node-fetch": "^2.6.0",
+    "winston": "^3.2.1"
+  }
+}

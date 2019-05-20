@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>未来教室</title>
+    <style>
+            .loadingBox {
+                width: 100vw;
+                height: 100vh;
+                position: relative;
+            }
+            .loading {
+                width: 100vw;
+                height: 100vh;
+                position: absolute;
+                left: 0;
+                top: 0;
+                object-fit: cover;
+                background-size: cover;
+            }
+            #cover {
+                position:absolute;left:0px;top:0px;
+                background:rgba(0, 0, 0, 0.7);
+                width: 100vw;
+                height: 100vh;
+                z-Index:998;  
+                display: none;
+            }
+            #errorModel {
+                width: 620;
+                height: 180px;
+                background: #fff;
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                margin-left: -310px;
+                margin-top: -90px;
+                z-index: 999;
+                padding: 20px;
+                font-family:PingFangSC-Regular,"Microsoft YaHei", SimSun, sans-serif;
+                user-select: none;
+                display: none;
+                border-radius: 5px 3px;
+            }
+            .errorContent {
+                font-size: 24px;
+                margin-top:15px;
+                margin-bottom: 50px;
+            }
+            .title {
+                font-weight: 400;
+                font-size:30px;
+                margin: 0;
+                padding: 0;;
+            }
+            .buttonBox {
+                margin-left: 23vw;
+            }
+            .buttonBox span{
+                color: #D81B60;
+                display: inline-block;
+                cursor: pointer;
+                width: 90px;
+                height: 26px;
+                line-height: 26px;
+                font-size: 22px;
+                text-align:right;
+                margin-left: 20px;
+            }
+        </style>
+</head>
+<body style="overflow:hidden">
+    <div id="loadingBox">
+        <div>
+            <img src="./img/loading.png" class="loading"/>
+        </div>
+        <div id="cover"></div>
+        <div id="errorModel">
+            <p class="title">提示</p>
+            <div class="errorContent">当前网络连接不正常，请检查网络连接情况后重试！</div>
+            <div class="buttonBox">
+                <span onclick="quit()">暂时退出</span>
+                <span onclick="reload()">重新加载</span>
+            </div>
+        </div>
+    </div> 
+
+
+
+
+
+
+
+    <script>
+        const errorModel = document.getElementById('errorModel');
+        const cover = document.getElementById('cover');
+        let timer;
+
+        if(require) {
+            ipcRenderer = require('electron').ipcRenderer;
+        }
+
+        ipcRenderer.on('reload-model', function(event, message) {
+            // 模态框 消失      
+            errorModel.style.display = 'none';
+            clearTimeout(timer);
+            timer = setTimeout(()=>{
+                errorModel.style.display = 'block';
+            },16)
+        });
+
+        // window.addEventListener('offline', () => {
+        //     console.log('offline');
+        //     errorModel.style.display = 'block';
+        //     cover.style.display = 'block';
+        // });
+
+        // 离线
+        ipcRenderer.on('offline', function(event, message) {
+            errorModel.style.display = 'block';
+            cover.style.display = 'block';
+        });
+
+        // 退出
+        function quit(){
+            ipcRenderer.send('quit-message');
+        }
+
+        // 重新加载
+        function reload(){
+            ipcRenderer.send('reload-message');
+
+        }
+
+    </script>
+</body>
+</html>
+
