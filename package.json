@@ -9,7 +9,8 @@
     "lint": "tslint -c tslint.json -p tsconfig.json",
     "dev": "yarn run compile && electron ./built/src/main.js",
     "build": "yarn run compile && rm -rf ./dist && electron-builder --ia32 -w -m",
-    "win-build": "yarn run compile && electron-builder --ia32 -w -m"
+    "win-build": "yarn run compile && electron-builder --ia32 -w -m",
+		"release":"yarn run compile && rm -rf ./dist && electron-builder --ia32 -m"
   },
   "license": "MIT",
   "devDependencies": {
